@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/responsive.dart';
 import '../utils/translations.dart';
+import 'terms_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -91,6 +92,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           size: 16,
                         ),
                         onTap: () {},
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.description_rounded,
+                          color: Color(0xFF0099CC),
+                        ),
+                        title: Text(
+                          T.termsOfService,
+                          style: TextStyle(fontSize: isSmall ? 14 : 15),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const TermsScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
