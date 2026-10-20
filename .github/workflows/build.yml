@@ -22,6 +22,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       
+      - name: Create .env file
+        run: |
+          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
+          echo "GROQ_MODEL=qwen/qwen3.8-27b" >> .env
+      
       - name: Build APK
         run: flutter build apk --release
       
@@ -45,6 +50,11 @@ jobs:
       
       - name: Install dependencies
         run: flutter pub get
+      
+      - name: Create .env file
+        run: |
+          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
+          echo "GROQ_MODEL=qwen/qwen3.8-27b" >> .env
       
       - name: Build iOS (No Codesigning)
         run: flutter build ios --release --no-codesign
