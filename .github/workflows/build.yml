@@ -5,17 +5,23 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
           channel: 'stable'
           cache: true
       
@@ -44,7 +50,6 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
           channel: 'stable'
           cache: true
       
@@ -56,21 +61,25 @@ jobs:
           echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
           echo "GROQ_MODEL=qwen/qwen3.8-27b" >> .env
       
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install
-      
       - name: Build iOS (No Codesigning)
         run: flutter build ios --release --no-codesign
       
-      - name: Create .app archive
+      - name: Create .app and .ipa archives
         run: |
           cd build/ios/iphoneos
-          zip -r Runner.app.zip Runner.app
+          zip -r -y Runner.app.zip Runner.app
+          mkdir Payload
+          cp -r Runner.app Payload/
+          zip -r -y Runner.ipa Payload
       
-      - name: Upload iOS Build
+      - name: Upload iOS .app Archive
         uses: actions/upload-artifact@v4
         with:
           name: ios-app
           path: build/ios/iphoneos/Runner.app.zip
+
+      - name: Upload iOS .ipa Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/ios/iphoneos/Runner.ipa
