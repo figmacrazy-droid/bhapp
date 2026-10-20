@@ -56,11 +56,21 @@ jobs:
           echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
           echo "GROQ_MODEL=qwen/qwen3.8-27b" >> .env
       
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+      
       - name: Build iOS (No Codesigning)
         run: flutter build ios --release --no-codesign
+      
+      - name: Create .app archive
+        run: |
+          cd build/ios/iphoneos
+          zip -r Runner.app.zip Runner.app
       
       - name: Upload iOS Build
         uses: actions/upload-artifact@v4
         with:
-          name: ios-build
-          path: build/ios/iphoneos/Runner.app
+          name: ios-app
+          path: build/ios/iphoneos/Runner.app.zip
