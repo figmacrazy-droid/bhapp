@@ -31,25 +31,25 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to take photos for safety inspection</string>
+	<string>Safety Check uses the camera to take a photo of a place so it can be analyzed for safety hazards such as exposed wires or blocked exits.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photo library access to select images for safety inspection</string>
+	<string>Safety Check accesses your photos so you can choose an image to analyze for safety hazards.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app needs permission to save safety inspection reports to your photo library</string>
+	<string>Safety Check saves your safety inspection reports to your photo library when you choose to save them.</string>
 </dict>
 </plist>

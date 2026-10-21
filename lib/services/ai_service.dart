@@ -100,18 +100,24 @@ class AIService {
           final List<DetectedRisk> risks = [];
           if (parsed['risks'] != null && parsed['risks'] is List) {
             for (var r in parsed['risks']) {
-              risks.add(DetectedRisk.fromJson(r));
+              if (r is Map<String, dynamic>) {
+                try {
+                  risks.add(DetectedRisk.fromJson(r));
+                } catch (_) {}
+              }
             }
           }
 
+          final level = (parsed['risk_level'] ?? 'low').toString().toLowerCase();
+
           return AIResult(
-            riskLevel: parsed['risk_level'] ?? 'low',
-            riskTitle: parsed['title'] ?? 'غير محدد',
-            riskDesc: parsed['description'] ?? '',
-            recommendation: parsed['recommendation'] ?? '',
-            confidence: (parsed['confidence'] ?? 0).toInt(),
+            riskLevel: const ['high', 'medium', 'low'].contains(level) ? level : 'medium',
+            riskTitle: (parsed['title'] ?? 'غير محدد').toString(),
+            riskDesc: (parsed['description'] ?? '').toString(),
+            recommendation: (parsed['recommendation'] ?? '').toString(),
+            confidence: DetectedRisk.toPercent(parsed['confidence']),
             risks: risks,
-            description: parsed['description'] ?? '',
+            description: (parsed['description'] ?? '').toString(),
           );
         }
 

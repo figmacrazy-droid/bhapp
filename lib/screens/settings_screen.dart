@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../services/ai_consent.dart';
 import '../utils/responsive.dart';
 import '../utils/translations.dart';
+import 'privacy_screen.dart';
 import 'terms_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -91,7 +93,70 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Icons.arrow_forward_ios_rounded,
                           size: 16,
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          showAboutDialog(
+                            context: context,
+                            applicationName: T.appName,
+                            applicationVersion: '1.0.0',
+                            applicationIcon: Image.asset(
+                              'assets/images/app_icon.png',
+                              width: 48,
+                              height: 48,
+                            ),
+                            children: [
+                              Text(AppLanguage.isArabic
+                                  ? 'تطبيق يساعدك على اكتشاف مخاطر السلامة في الصور باستخدام الذكاء الاصطناعي. النتائج إرشادية ولا تغني عن فحص مختص.'
+                                  : 'Detect safety hazards in photos using AI. Results are for guidance only and do not replace a professional inspection.'),
+                            ],
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.privacy_tip_rounded,
+                          color: Color(0xFF0099CC),
+                        ),
+                        title: Text(
+                          AppLanguage.isArabic ? 'سياسة الخصوصية' : 'Privacy Policy',
+                          style: TextStyle(fontSize: isSmall ? 14 : 15),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 16,
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PrivacyScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.block_rounded,
+                          color: Color(0xFF0099CC),
+                        ),
+                        title: Text(
+                          AppLanguage.isArabic
+                              ? 'سحب موافقة مشاركة الصور'
+                              : 'Withdraw Photo Sharing Consent',
+                          style: TextStyle(fontSize: isSmall ? 14 : 15),
+                        ),
+                        onTap: () async {
+                          await AIConsent.revoke();
+                          if (!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(AppLanguage.isArabic
+                                  ? 'تم سحب الموافقة. سيُطلب منك الإذن قبل التحليل القادم.'
+                                  : 'Consent withdrawn. You will be asked again before the next analysis.'),
+                            ),
+                          );
+                        },
                       ),
                       const Divider(height: 1),
                       ListTile(

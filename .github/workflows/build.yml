@@ -57,9 +57,20 @@ jobs:
         run: flutter pub get
       
       - name: Create .env file
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
-          echo "GROQ_MODEL=qwen/qwen3.8-27b" >> .env
+          if [ -z "$GROQ_API_KEY" ]; then
+            echo "::error::GROQ_API_KEY secret is missing. Add it in Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          printf "GROQ_API_KEY=%s\nGROQ_MODEL=qwen/qwen3.8-27b\n" "$GROQ_API_KEY" > .env
+          code=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $GROQ_API_KEY" https://api.groq.com/openai/v1/models)
+          if [ "$code" != "200" ]; then
+            echo "::error::GROQ_API_KEY is invalid (HTTP $code). AI analysis would not work."
+            exit 1
+          fi
+          echo "Groq API key verified."
       
       - name: Build iOS (No Codesigning)
         run: flutter build ios --release --no-codesign

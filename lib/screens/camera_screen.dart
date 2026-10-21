@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../services/ai_consent.dart';
 import '../services/ai_service.dart';
 import '../utils/responsive.dart';
 import '../utils/translations.dart';
@@ -98,8 +99,19 @@ class _CameraScreenState extends State<CameraScreen>
       await Future.delayed(const Duration(milliseconds: 200));
     }
 
+    // Explicit consent before sending any photo to the AI provider.
+    if (!await AIConsent.ensure(context)) return;
+    if (!mounted) return;
+
     try {
-      final XFile? image = await _picker.pickImage(source: source);
+      // Resize/compress so the base64 payload stays well under the
+      // AI provider's 4 MB request limit (full-size iPhone photos exceed it).
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        maxWidth: 1600,
+        maxHeight: 1600,
+        imageQuality: 80,
+      );
       print('=== Picker RETURNED: ${image?.path} ===');
 
       if (image == null) return;
